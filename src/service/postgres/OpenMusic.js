@@ -1,8 +1,12 @@
+/* eslint-disable comma-dangle */
+/* eslint-disable object-curly-newline */
+/* eslint-disable operator-linebreak */
+/* eslint-disable no-underscore-dangle */
+
 const { nanoid } = require('nanoid');
 const { Pool } = require('pg');
 
 // custom error handling
-const ClientError = require('../../exceptions/client/ClientError');
 const InvariantError = require('../../exceptions/client/InvariantError');
 const NotFoundError = require('../../exceptions/client/NotFoundError');
 
@@ -85,6 +89,7 @@ class OpenMusicService {
     }
   }
 
+  // eslint-disable-next-line object-curly-newline
   async addSongs({ title, year, genre, performer, duration, albumId }) {
     const id = `songs-${nanoid(16)}`;
     const createdAt = new Date().toISOString();
@@ -179,7 +184,7 @@ class OpenMusicService {
     return result.rows;
   }
 
-  async searchByTitleAndPerformer(title, performer) {
+  async searchByTitleAndPerformer({ title, performer }) {
     const query = {};
     if (title !== undefined && performer !== undefined) {
       query.text =

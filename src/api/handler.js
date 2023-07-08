@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const autoBind = require('auto-bind');
 
 class OpenMusicHandler {
@@ -83,7 +84,7 @@ class OpenMusicHandler {
     const response = res.response({
       status: 'success',
       data: {
-        songId: songId,
+        songId,
       },
     });
     response.code(201);
@@ -93,10 +94,7 @@ class OpenMusicHandler {
   async getSongsHandler(req) {
     const { title, performer } = req.query;
     if (title || performer) {
-      const songs = await this._service.searchByTitleAndPerformer(
-        title,
-        performer
-      );
+      const songs = await this._service.searchByTitleAndPerformer(req.query);
 
       return {
         status: 'success',
