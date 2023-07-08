@@ -1,33 +1,29 @@
-MapDBToModels = {
-  mapSongsToModels: ({
-    id,
-    title,
-    year,
-    genre,
-    performer,
-    duration,
-    album_id,
-    created_at,
-    updated_at,
-  }) => ({
-    id,
-    title,
-    year,
-    genre,
-    performer,
-    duration,
-    albumId: album_id,
-    createdAt: created_at,
-    updatedAt: updated_at,
-  }),
+MapSongsIntoModels = ({
+  id,
+  title,
+  year,
+  genre,
+  performer,
+  duration,
+  albumId,
+  created_at,
+  updated_at,
+}) => ({
+  id,
+  title,
+  year,
+  genre,
+  performer,
+  duration,
+  albumId,
+  createdAt: created_at,
+  updatedAt: updated_at,
+});
 
-  mapAlbumsToModels: ({ id, name, year, created_at, updated_at }) => ({
-    id,
-    name,
-    year,
-    createdAt: created_at,
-    updatedAt: updated_at,
-  }),
-};
+MapAlbumsIntoModels = ({ id, name, year }) => ({
+  id,
+  name,
+  year,
+});
 
-module.exports = { MapDBToModels };
+module.exports = { MapAlbumsIntoModels, MapSongsIntoModels };

@@ -80,12 +80,6 @@ const init = async () => {
         serviceUnavailableError.code(response.statusCode);
         return serviceUnavailableError;
       }
-
-      const internalResponseError = res.response({
-        status: 'fail',
-        message: response.message,
-      });
-      return internalResponseError;
     }
 
     return res.continue;
