@@ -1,0 +1,27 @@
+{
+  "name": "open-music-api",
+  "version": "1.0.0",
+  "description": "Application Programming Interface for songs data",
+  "main": "index.js",
+  "scripts": {
+    "prod": "NODE_ENV=production node ./src/server.js",
+    "dev": "nodemon ./src/server.js",
+    "lint": "eslint ./src",
+    "migrate": "node-pg-migrate"
+  },
+  "author": "Aji Hamdani Ahmad",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/hapi": "^21.3.2",
+    "auto-bind": "4",
+    "dotenv": "^16.3.1",
+    "eslint": "^8.44.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "joi": "^17.9.2",
+    "nanoid": "3.1.20",
+    "node-pg-migrate": "^6.2.2",
+    "nodemon": "^2.0.22",
+    "pg": "^8.11.1"
+  }
+}
