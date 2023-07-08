@@ -35,14 +35,13 @@ class OpenMusicHandler {
     };
   }
 
-  async getAlbumsByIdHandler(req, res) {
+  async getAlbumsByIdHandler(req) {
     const { id } = req.params;
     const resultAlbum = await this._service.getAlbumsById(id);
     const songs = await this._service.getSongsByAlbumId(id);
-    console.log(songs);
     const { name, year } = resultAlbum;
 
-    const response = res.response({
+    return {
       status: 'success',
       message: 'Berhasil mendapatkan album',
       data: {
@@ -53,9 +52,7 @@ class OpenMusicHandler {
           songs,
         },
       },
-    });
-    response.code(200);
-    return response;
+    };
   }
 
   async editAlbumsByIdHandler(req) {
@@ -80,9 +77,9 @@ class OpenMusicHandler {
   async addSongsHandler(req, res) {
     this._validateSongs(req.payload);
     const songId = await this._service.addSongs(req.payload);
-
     const response = res.response({
       status: 'success',
+      message: 'Berhasil menambahkan lagu',
       data: {
         songId,
       },
@@ -98,6 +95,7 @@ class OpenMusicHandler {
 
       return {
         status: 'success',
+        message: 'Berhasil mendapatkan lagu',
         data: {
           songs,
         },
@@ -107,6 +105,7 @@ class OpenMusicHandler {
     const songs = await this._service.getSongs();
     return {
       status: 'success',
+      message: 'Berhasil mendapatkan lagu',
       data: {
         songs,
       },
@@ -118,6 +117,7 @@ class OpenMusicHandler {
     const song = await this._service.getSongsById(id);
     return {
       status: 'success',
+      message: 'Berhasil mendapatkan lagu',
       data: {
         song,
       },
@@ -130,7 +130,7 @@ class OpenMusicHandler {
     await this._service.editSongsById(id, req.payload);
     return {
       status: 'success',
-      message: 'Berhasil memperbarui Musik',
+      message: 'Berhasil memperbarui lagu',
     };
   }
 
@@ -139,7 +139,7 @@ class OpenMusicHandler {
     await this._service.deleteSongsById(id);
     return {
       status: 'success',
-      message: 'Berhasil menghapus Musik',
+      message: 'Berhasil menghapus lagu',
     };
   }
 }

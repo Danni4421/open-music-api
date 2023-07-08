@@ -33,7 +33,7 @@ class OpenMusicService {
 
     const result = await this._pool.query(query);
     if (!result.rows[0].id) {
-      throw new InvariantError('Gagal menambahkan data album');
+      throw new InvariantError('Gagal menambahkan album');
     }
 
     return result.rows[0].id;
@@ -42,7 +42,7 @@ class OpenMusicService {
   async getAlbums() {
     const result = await this._pool.query('SELECT id, name, year FROM albums');
     if (!result.rows.length) {
-      throw new NotFoundError('Album tidak ditemukan');
+      throw new NotFoundError('Gagal mendapatkan data album');
     }
 
     return result.rows.map(MapAlbumsIntoModels);
@@ -113,7 +113,7 @@ class OpenMusicService {
     const result = await this._pool.query(query);
 
     if (!result.rows[0].id) {
-      throw new InvariantError('Musik gagal ditambahkan');
+      throw new InvariantError('Gagal menambahkan lagu');
     }
 
     return result.rows[0].id;
@@ -125,7 +125,7 @@ class OpenMusicService {
     );
 
     if (!result.rows.length > 0) {
-      throw new NotFoundError('Musik tidak ditemukan');
+      throw new NotFoundError('Gagal mendapatkan lagu');
     }
 
     return result.rows;
@@ -139,7 +139,7 @@ class OpenMusicService {
 
     const result = await this._pool.query(query);
     if (!result.rows.length > 0) {
-      throw new NotFoundError('Musik tidak ditemukan');
+      throw new NotFoundError('Gagal mendapatkan lagu. Id tidak ditemukan');
     }
 
     return result.rows.map(MapSongsIntoModels)[0];
@@ -151,14 +151,14 @@ class OpenMusicService {
   ) {
     const updatedAt = new Date().toISOString();
     const query = {
-      text: 'UPDATE songs SET title=$1, year=$2, genre=$3, performer=$4, duration=$5, "albumId"=$6, updated_at=$7 WHERE id = $8 RETURNING id',
+      text: 'UPDATE songs SET title=$1, year=$2, genre=$3, performer=$4, duration=$5, album_id=$6, updated_at=$7 WHERE id = $8 RETURNING id',
       values: [title, year, genre, performer, duration, albumId, updatedAt, id],
     };
 
     const result = await this._pool.query(query);
 
     if (!result.rows.length) {
-      throw new NotFoundError('Gagal memperbarui Musik. Id tidak ditemukan');
+      throw new NotFoundError('Gagal memperbarui lagu. Id tidak ditemukan');
     }
   }
 
@@ -170,18 +170,18 @@ class OpenMusicService {
 
     const result = await this._pool.query(query);
     if (!result.rows.length) {
-      throw new NotFoundError('Gagal menghapus Musik. Id tidak ditemukan');
+      throw new NotFoundError('Gagal menghapus lagu. Id tidak ditemukan');
     }
   }
 
   async getSongsByAlbumId(albumId) {
     const query = {
-      text: 'SELECT id, title, performer FROM songs WHERE "albumId" = $1',
+      text: 'SELECT id, title, performer FROM songs WHERE album_id = $1',
       values: [albumId],
     };
 
     const result = await this._pool.query(query);
-    return result.rows;
+    return result.rows.map(MapSongsIntoModels);
   }
 
   async searchByTitleAndPerformer({ title, performer }) {
@@ -206,7 +206,9 @@ class OpenMusicService {
 
     const result = await this._pool.query(query);
     if (!result.rows.length) {
-      throw new NotFoundError('Gagal untuk mendapatkan lagu');
+      throw new NotFoundError(
+        'Gagal mendapatkan lagu. Keyword mungkin tidak sesuai'
+      );
     }
 
     return result.rows.map(MapSongsIntoModels);
