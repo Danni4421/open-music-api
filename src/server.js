@@ -3,8 +3,10 @@ require('dotenv').config();
 // import
 const Hapi = require('@hapi/hapi');
 const OpenMusic = require('./api');
-const OpenMusicService = require('./service/postgres/OpenMusic');
-const OpenMusicValidator = require('./validator/OpenMusic/OpenMusicValidator');
+const AlbumsService = require('./service/postgres/albums/AlbumsService');
+const SongsService = require('./service/postgres/songs/SongsService');
+const AlbumsPayloadValidator = require('./validator/OpenMusic/albums');
+const SongsPayloadValidator = require('./validator/OpenMusic/songs');
 
 // custom error handling
 const ClientError = require('./exceptions/client/ClientError');
@@ -14,7 +16,8 @@ const ServiceUnavailableError = require('./exceptions/server/ServiceUnavailableE
 
 // init Hapi
 const init = async () => {
-  const openMusicService = new OpenMusicService();
+  const albumsService = new AlbumsService();
+  const songsService = new SongsService();
 
   const server = Hapi.server({
     host: process.env.HOST,
@@ -29,8 +32,14 @@ const init = async () => {
   await server.register({
     plugin: OpenMusic,
     options: {
-      service: openMusicService,
-      validator: OpenMusicValidator,
+      service: {
+        albumsService,
+        songsService,
+      },
+      validator: {
+        AlbumsPayloadValidator,
+        SongsPayloadValidator,
+      },
     },
   });
 

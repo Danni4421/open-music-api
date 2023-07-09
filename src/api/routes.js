@@ -1,56 +1,56 @@
-const routes = (handler) => [
+const routes = (albumsHandler, songsHandler) => [
   // routes albums
   {
     method: 'POST',
     path: '/albums',
-    handler: handler.addAlbumsHandler,
+    handler: albumsHandler.addAlbumsHandler,
   },
   {
     method: 'GET',
     path: '/albums',
-    handler: handler.getAlbumsHandler,
+    handler: albumsHandler.getAlbumsHandler,
   },
   {
     method: 'GET',
     path: '/albums/{id}',
-    handler: handler.getAlbumsByIdHandler,
+    handler: albumsHandler.getAlbumsByIdHandler,
   },
   {
     method: 'PUT',
     path: '/albums/{id}',
-    handler: handler.editAlbumsByIdHandler,
+    handler: albumsHandler.editAlbumsByIdHandler,
   },
   {
     method: 'DELETE',
     path: '/albums/{id}',
-    handler: handler.deleteAlbumsByIdHandler,
+    handler: albumsHandler.deleteAlbumsByIdHandler,
   },
 
   // routes songs
   {
     method: 'POST',
     path: '/songs',
-    handler: handler.addSongsHandler,
+    handler: songsHandler.addSongsHandler,
   },
   {
     method: 'GET',
     path: '/songs',
-    handler: handler.getSongsHandler,
+    handler: songsHandler.getSongsHandler,
   },
   {
     method: 'GET',
     path: '/songs/{id}',
-    handler: handler.getSongsByIdHandler,
+    handler: songsHandler.getSongsByIdHandler,
   },
   {
     method: 'PUT',
     path: '/songs/{id}',
-    handler: handler.putSongsByIdHandler,
+    handler: songsHandler.putSongsByIdHandler,
   },
   {
     method: 'DELETE',
     path: '/songs/{id}',
-    handler: handler.deleteSongsByIdHandler,
+    handler: songsHandler.deleteSongsByIdHandler,
   },
 ];
 
