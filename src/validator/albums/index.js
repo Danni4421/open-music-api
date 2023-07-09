@@ -1,4 +1,4 @@
-const InvariantError = require('../../../exceptions/client/InvariantError');
+const InvariantError = require('../../exceptions/client/InvariantError');
 const AlbumsPayloadSchema = require('./schema');
 
 const AlbumsPayloadValidator = {
