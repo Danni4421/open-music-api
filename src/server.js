@@ -13,6 +13,11 @@ const albums = require('./api/albums');
 const AlbumsPayloadValidator = require('./validator/albums');
 const AlbumsService = require('./service/postgres/albums/AlbumsService');
 
+// users
+const users = require('./api/users');
+const UserValidator = require('./validator/users');
+const UsersService = require('./service/postgres/users/UsersService');
+
 // custom error handling
 const ClientError = require('./exceptions/client/ClientError');
 const NotFoundError = require('./exceptions/client/NotFoundError');
@@ -23,6 +28,7 @@ const ServiceUnavailableError = require('./exceptions/server/ServiceUnavailableE
 const init = async () => {
   const albumsService = new AlbumsService();
   const songsService = new SongsService();
+  const usersService = new UsersService();
 
   const server = Hapi.server({
     host: process.env.HOST,
@@ -47,6 +53,13 @@ const init = async () => {
       options: {
         service: songsService,
         validator: SongsPayloadValidator,
+      },
+    },
+    {
+      plugin: users,
+      options: {
+        service: usersService,
+        validator: UserValidator,
       },
     },
   ]);
@@ -97,6 +110,13 @@ const init = async () => {
         serviceUnavailableError.code(response.statusCode);
         return serviceUnavailableError;
       }
+
+      const serverError = res.response({
+        status: 'fail',
+        message: 'Maaf, terjadi kegagalan pada server kami.',
+      });
+      serverError.code(500);
+      return serverError;
     }
 
     return res.continue;
