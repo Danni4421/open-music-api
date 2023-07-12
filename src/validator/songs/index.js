@@ -5,7 +5,7 @@ const SongsPayloadValidator = {
   validateSongs: (payload) => {
     const validateResult = SongsPayloadSchema.validate(payload);
     if (validateResult.error) {
-      throw new InvariantError('Bad Request');
+      throw new InvariantError(validateResult.error.message);
     }
   },
 };

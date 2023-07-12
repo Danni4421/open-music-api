@@ -131,6 +131,18 @@ class SongsService {
 
     return result.rows.map(MapSongsIntoModels);
   }
+
+  async verifySong(id) {
+    const query = {
+      text: 'SELECT * FROM songs WHERE id = $1',
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+    if (!result.rows.length) {
+      throw new NotFoundError('Gagal mendapatkan lagu, Id tidak ditemukan');
+    }
+  }
 }
 
 module.exports = SongsService;

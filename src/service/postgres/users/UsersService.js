@@ -7,6 +7,7 @@ const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
 const InvariantError = require('../../../exceptions/client/InvariantError');
 const NotFoundError = require('../../../exceptions/client/NotFoundError');
+const AuthenticationsError = require('../../../exceptions/client/AuthenticationsError');
 
 class UsersService {
   constructor() {
@@ -59,6 +60,33 @@ class UsersService {
     if (!result.rows.length) {
       throw new NotFoundError('Gagal menghapus User. Id tidak ditemukan');
     }
+  }
+
+  async verifyUserCredential(username, password) {
+    const query = {
+      text: 'SELECT id, password FROM users WHERE username = $1',
+      values: [username],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new AuthenticationsError(
+        'Kredensial yang Anda berikan tidak valid.'
+      );
+    }
+
+    const { id, password: hashedPassword } = result.rows[0];
+
+    const isMatch = await bcrypt.compare(password, hashedPassword);
+
+    if (!isMatch) {
+      throw new AuthenticationsError(
+        'Kredensial yang Anda berikan tidak valid'
+      );
+    }
+
+    return id;
   }
 }
 
