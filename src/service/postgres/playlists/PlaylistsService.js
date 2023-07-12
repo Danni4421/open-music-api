@@ -2,6 +2,8 @@
 /* eslint-disable no-underscore-dangle */
 const { nanoid } = require('nanoid');
 const { Pool } = require('pg');
+
+// exceptions
 const InvariantError = require('../../../exceptions/client/InvariantError');
 const NotFoundError = require('../../../exceptions/client/NotFoundError');
 const AuthorizationsError = require('../../../exceptions/client/AuthorizationsError');
@@ -51,13 +53,19 @@ class PlaylistService {
 
   async deletePlaylist(id, ownerId) {
     await this.verifyPlaylist(id, ownerId);
-    // Delete from playlist_songs
     const playlistSongsQuery = {
       text: 'DELETE FROM playlist_songs WHERE playlist_id = $1',
       values: [id],
     };
 
     await this._pool.query(playlistSongsQuery);
+
+    const playlistsActivitiesQuery = {
+      text: 'DELETE FROM activities WHERE playlist_id = $1',
+      values: [id],
+    };
+
+    await this._pool.query(playlistsActivitiesQuery);
 
     const query = {
       text: 'DELETE FROM playlists WHERE id = $1 RETURNING id',
@@ -71,18 +79,19 @@ class PlaylistService {
     }
   }
 
-  async addPlaylistSong(id, ownerId, { songId }) {
-    await this.verifyPlaylist(id, ownerId);
+  async addPlaylistSong(playlistId, ownerId, songId) {
+    await this.verifyPlaylist(playlistId, ownerId);
     await this._songsService.verifySong(songId);
 
     const playlistSongsId = `playlist-songs-${nanoid(16)}`;
 
     const songQuery = {
       text: 'INSERT INTO playlist_songs VALUES ($1, $2, $3) RETURNING id',
-      values: [playlistSongsId, id, songId],
+      values: [playlistSongsId, playlistId, songId],
     };
 
     const result = await this._pool.query(songQuery);
+
     if (!result.rows[0].id) {
       throw new InvariantError('Gagal menambahkan lagu ke playlist.');
     }
