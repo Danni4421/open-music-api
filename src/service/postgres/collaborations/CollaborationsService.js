@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 const { nanoid } = require('nanoid');
 const { Pool } = require('pg');
 const InvariantError = require('../../../exceptions/client/InvariantError');
@@ -34,7 +33,7 @@ class CollaborationsService {
 
     const result = await this._pool.query(query);
 
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new NotFoundError('Gagal menghapus kolaborasi.');
     }
   }
@@ -47,7 +46,7 @@ class CollaborationsService {
 
     const result = await this._pool.query(query);
 
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new NotFoundError('Kolaborasi gagal untuk diverifikasi');
     }
   }
@@ -60,7 +59,7 @@ class CollaborationsService {
 
     const resultUser = await this._pool.query(queryUser);
 
-    if (!resultUser.rows.length) {
+    if (!resultUser.rowCount) {
       throw new NotFoundError('Gagal mendapatkan user, Id tidak ditemukan');
     }
 
@@ -71,7 +70,7 @@ class CollaborationsService {
 
     const resultPlaylist = await this._pool.query(queryPlaylist);
 
-    if (!resultPlaylist.rows.length) {
+    if (!resultPlaylist.rowCount) {
       throw new NotFoundError('Gagal mendapatkan playlist, Id tidak ditemukan');
     }
   }

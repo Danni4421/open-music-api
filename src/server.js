@@ -1,16 +1,11 @@
-/* eslint-disable import/no-extraneous-dependencies */
-
 require('dotenv').config();
 
-// import
 const Hapi = require('@hapi/hapi');
 const Jwt = require('@hapi/jwt');
 
-// Error Handler
 const ErrorHandling = require('./ErrorHandling');
 const HapiPlugin = require('./Plugin');
 
-// init Hapi
 const init = async () => {
   const server = Hapi.server({
     host: process.env.HOST,
@@ -44,10 +39,8 @@ const init = async () => {
     }),
   });
 
-  // Server plugin
   await HapiPlugin(server);
 
-  // onPreResponse
   ErrorHandling(server);
 
   await server.start();

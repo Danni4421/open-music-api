@@ -1,4 +1,3 @@
-/* eslint-disable newline-per-chained-call */
 const Joi = require('joi');
 
 const currentYear = new Date().getFullYear();

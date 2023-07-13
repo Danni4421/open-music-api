@@ -7,5 +7,12 @@
   "parserOptions": {
     "ecmaVersion": 2020
   },
-  "rules": { "no-console": "off" }
+  "rules": {
+    "no-console": "off",
+    "comma-dangle": "off",
+    "newline-per-chained-call": "off",
+    "operator-linebreak": "off",
+    "no-underscore-dangle": "off",
+    "object-curly-newline": "off"
+  }
 }

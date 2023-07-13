@@ -1,4 +1,3 @@
-/* eslint-disable operator-linebreak */
 const {
   PostAuthenticationsPayloadSchema,
   PutAuthenticationsPayloadSchema,

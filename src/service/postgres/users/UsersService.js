@@ -1,7 +1,3 @@
-/* eslint-disable comma-dangle */
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable no-underscore-dangle */
-
 const { nanoid } = require('nanoid');
 const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
@@ -42,7 +38,7 @@ class UsersService {
 
     const result = await this._pool.query(query);
 
-    if (result.rows.length > 0) {
+    if (result.rowCount > 0) {
       throw new InvariantError(
         'Gagal menambahkan user. Username sudah digunakan.'
       );
@@ -57,7 +53,7 @@ class UsersService {
 
     const result = await this._pool.query(query);
 
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new NotFoundError('Gagal menghapus User. Id tidak ditemukan');
     }
   }
@@ -70,7 +66,7 @@ class UsersService {
 
     const result = await this._pool.query(query);
 
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new AuthenticationsError(
         'Kredensial yang Anda berikan tidak valid.'
       );

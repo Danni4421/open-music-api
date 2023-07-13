@@ -1,6 +1,3 @@
-/* eslint-disable comma-dangle */
-/* eslint-disable camelcase */
-
 exports.up = (pgm) => {
   pgm.addConstraint(
     'activities',

@@ -1,36 +1,28 @@
-/* eslint-disable comma-dangle */
-// songs
 const songs = require('./api/songs');
 const SongsPayloadValidator = require('./validator/songs');
 const SongsService = require('./service/postgres/songs/SongsService');
 
-// albums
 const albums = require('./api/albums');
 const AlbumsPayloadValidator = require('./validator/albums');
 const AlbumsService = require('./service/postgres/albums/AlbumsService');
 
-// users
 const users = require('./api/users');
 const UserValidator = require('./validator/users');
 const UsersService = require('./service/postgres/users/UsersService');
 
-// authentications
 const authentications = require('./api/authentications');
 const AuthenticationsValidator = require('./validator/authentications');
 const AuthenticationsService = require('./service/postgres/authentications/AuthenticationsService');
 const TokenManager = require('./tokenize/TokenManager');
 
-// collaborations
 const collaborations = require('./api/collaborations');
 const CollaborationsValidator = require('./validator/collaborations');
 const CollaborationsService = require('./service/postgres/collaborations/CollaborationsService');
 
-// playlists
 const playlists = require('./api/playlists');
 const PlaylistsValidator = require('./validator/playlists');
 const PlaylistService = require('./service/postgres/playlists/PlaylistsService');
 
-// activities
 const ActivitiesService = require('./service/postgres/activities/ActivitiesService');
 
 const HapiPlugin = async (server) => {

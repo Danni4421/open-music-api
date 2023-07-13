@@ -1,5 +1,3 @@
-/* eslint-disable object-curly-newline */
-/* eslint-disable comma-dangle */
 const AuthenticationsHandler = require('./handler');
 const routes = require('./routes');
 

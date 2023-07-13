@@ -1,4 +1,3 @@
-/* eslint-disable comma-dangle */
 const CollaborationsHandler = require('./handler');
 const routes = require('./routes');
 

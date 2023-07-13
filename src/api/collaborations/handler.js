@@ -1,7 +1,5 @@
-/* eslint-disable comma-dangle */
 const autoBind = require('auto-bind');
 
-/* eslint-disable no-underscore-dangle */
 class CollaborationsHandler {
   constructor(collaborationsService, playlistsService, validator) {
     this._collaborationsService = collaborationsService;

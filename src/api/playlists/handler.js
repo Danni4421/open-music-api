@@ -1,5 +1,3 @@
-/* eslint-disable comma-dangle */
-/* eslint-disable no-underscore-dangle */
 const autoBind = require('auto-bind');
 
 class PlaylistsHandler {

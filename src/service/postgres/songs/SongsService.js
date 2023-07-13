@@ -1,16 +1,8 @@
-/* eslint-disable operator-linebreak */
-/* eslint-disable comma-dangle */
-/* eslint-disable object-curly-newline */
-/* eslint-disable no-underscore-dangle */
-
 const { Pool } = require('pg');
 const { nanoid } = require('nanoid');
-
-// custom error handling
 const InvariantError = require('../../../exceptions/client/InvariantError');
 const NotFoundError = require('../../../exceptions/client/NotFoundError');
 
-// map
 const MapSongsIntoModels = require('../../utils/map/songs');
 
 class SongsService {
@@ -52,7 +44,7 @@ class SongsService {
       'SELECT id, title, performer FROM songs'
     );
 
-    if (!result.rows.length > 0) {
+    if (!result.rowCount > 0) {
       throw new NotFoundError('Gagal mendapatkan lagu');
     }
 
@@ -66,11 +58,30 @@ class SongsService {
     };
 
     const result = await this._pool.query(query);
-    if (!result.rows.length > 0) {
+    if (!result.rowCount > 0) {
       throw new NotFoundError('Gagal mendapatkan lagu. Id tidak ditemukan');
     }
 
     return result.rows.map(MapSongsIntoModels)[0];
+  }
+
+  async getSongsByPlaylistId(playlistId) {
+    const query = {
+      text: `
+        SELECT 
+          songs.id,
+          songs.title,
+          songs.performer
+          FROM playlist_songs
+            LEFT JOIN songs ON songs.id = playlist_songs.song_id
+            WHERE playlist_songs.playlist_id = $1
+      `,
+      values: [playlistId],
+    };
+
+    const result = await this._pool.query(query);
+
+    return result.rows;
   }
 
   async editSongsById(
@@ -85,7 +96,7 @@ class SongsService {
 
     const result = await this._pool.query(query);
 
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new NotFoundError('Gagal memperbarui lagu. Id tidak ditemukan');
     }
   }
@@ -97,7 +108,7 @@ class SongsService {
     };
 
     const result = await this._pool.query(query);
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new NotFoundError('Gagal menghapus lagu. Id tidak ditemukan');
     }
   }
@@ -123,7 +134,7 @@ class SongsService {
     }
 
     const result = await this._pool.query(query);
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new NotFoundError(
         'Gagal mendapatkan lagu. Keyword mungkin tidak sesuai'
       );
@@ -139,7 +150,7 @@ class SongsService {
     };
 
     const result = await this._pool.query(query);
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new NotFoundError('Gagal mendapatkan lagu, Id tidak ditemukan');
     }
   }

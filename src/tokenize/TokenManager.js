@@ -1,6 +1,4 @@
-/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable implicit-arrow-linebreak */
-
 const Jwt = require('@hapi/jwt');
 const InvariantError = require('../exceptions/client/InvariantError');
 

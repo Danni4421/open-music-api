@@ -1,10 +1,5 @@
-/* eslint-disable operator-linebreak */
-/* eslint-disable comma-dangle */
-/* eslint-disable no-underscore-dangle */
 const { nanoid } = require('nanoid');
 const { Pool } = require('pg');
-
-// exceptions
 const InvariantError = require('../../../exceptions/client/InvariantError');
 const NotFoundError = require('../../../exceptions/client/NotFoundError');
 const AuthorizationsError = require('../../../exceptions/client/AuthorizationsError');
@@ -70,8 +65,6 @@ class PlaylistService {
 
     collaborationsPlaylist.rows.map((p) => result.rows.push(p));
 
-    console.log('TOM RESULT', result.rows);
-
     return result.rows;
   }
 
@@ -104,7 +97,7 @@ class PlaylistService {
 
     const result = await this._pool.query(query);
 
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new NotFoundError('Gagal menghapus playlist, Id tidak ditemukan.');
     }
   }
@@ -126,7 +119,7 @@ class PlaylistService {
     }
   }
 
-  async getPlaylistSongs(id) {
+  async getPlaylistSongs(playlistId) {
     const playlistQuery = {
       text: `
         SELECT 
@@ -137,7 +130,7 @@ class PlaylistService {
           LEFT OUTER JOIN users ON users.id = playlists.owner
           WHERE playlists.id = $1
       `,
-      values: [id],
+      values: [playlistId],
     };
 
     const playlistResult = await this._pool.query(playlistQuery);
@@ -150,26 +143,13 @@ class PlaylistService {
 
     const { name, username } = playlistResult.rows[0];
 
-    const songsQuery = {
-      text: `
-        SELECT 
-          songs.id,
-          songs.title,
-          songs.performer
-          FROM playlist_songs
-            LEFT JOIN songs ON songs.id = playlist_songs.song_id
-            WHERE playlist_songs.playlist_id = $1
-      `,
-      values: [id],
-    };
-
-    const songs = await this._pool.query(songsQuery);
+    const songs = await this._songsService.getSongsByPlaylistId(playlistId);
 
     const result = {
-      id,
+      id: playlistId,
       name,
       username,
-      songs: songs.rows,
+      songs,
     };
 
     return result;
@@ -183,7 +163,7 @@ class PlaylistService {
 
     const result = await this._pool.query(query);
 
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new NotFoundError('Playlist atau Lagu tidak ditemukan.');
     }
   }
@@ -196,7 +176,7 @@ class PlaylistService {
 
     const result = await this._pool.query(query);
 
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new NotFoundError('Gagal menemukan playlist, Id tidak ditemukan.');
     }
 
