@@ -33,6 +33,7 @@ class PlaylistsHandler {
 
   async getPlaylistsHandler(req) {
     const { id: credentialId } = req.auth.credentials;
+
     const playlists = await this._playlistsService.getPlaylists(credentialId);
     return {
       status: 'success',
@@ -46,6 +47,7 @@ class PlaylistsHandler {
   async deletePlaylistsByIdHandler(req) {
     const { id: playlistId } = req.params;
     const { id: credentialId } = req.auth.credentials;
+    await this._playlistsService.verifyPlaylistOwner(playlistId, credentialId);
     await this._playlistsService.deletePlaylist(playlistId, credentialId);
     return {
       status: 'success',
@@ -59,12 +61,8 @@ class PlaylistsHandler {
     const { id: credentialId } = req.auth.credentials;
     const { songId } = req.payload;
 
-    await this._playlistsService.addPlaylistSong(
-      playlistId,
-      credentialId,
-      songId
-    );
-
+    await this._playlistsService.verifyPlaylistAccess(playlistId, credentialId);
+    await this._playlistsService.addPlaylistSong(playlistId, songId);
     await this._activitiesService.postActivitiesPlaylist(
       playlistId,
       songId,
@@ -83,6 +81,7 @@ class PlaylistsHandler {
   async getPlaylistSongsHandler(req) {
     const { id: playlistId } = req.params;
     const { id: credentialId } = req.auth.credentials;
+    await this._playlistsService.verifyPlaylistAccess(playlistId, credentialId);
     const playlist = await this._playlistsService.getPlaylistSongs(
       playlistId,
       credentialId
@@ -104,20 +103,14 @@ class PlaylistsHandler {
     const { id: playlistId } = req.params;
     const { id: credentialId } = req.auth.credentials;
 
-    await this._playlistsService.deletePlaylistSong(
-      playlistId,
-      songId,
-      credentialId
-    );
-
+    await this._playlistsService.verifyPlaylistAccess(playlistId, credentialId);
+    await this._playlistsService.deletePlaylistSong(playlistId, songId);
     await this._activitiesService.postActivitiesPlaylist(
       playlistId,
       songId,
       credentialId,
       'delete'
     );
-
-    console.log('Berhasil');
 
     return {
       status: 'success',
@@ -129,7 +122,7 @@ class PlaylistsHandler {
     const { id: playlistId } = req.params;
     const { id: credentialId } = req.auth.credentials;
 
-    await this._playlistsService.verifyPlaylist(playlistId, credentialId);
+    await this._playlistsService.verifyPlaylistAccess(playlistId, credentialId);
     const activities = await this._activitiesService.getActivitiesPlaylist(
       playlistId
     );

@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 // songs
 const songs = require('./api/songs');
 const SongsPayloadValidator = require('./validator/songs');
@@ -19,6 +20,11 @@ const AuthenticationsValidator = require('./validator/authentications');
 const AuthenticationsService = require('./service/postgres/authentications/AuthenticationsService');
 const TokenManager = require('./tokenize/TokenManager');
 
+// collaborations
+const collaborations = require('./api/collaborations');
+const CollaborationsValidator = require('./validator/collaborations');
+const CollaborationsService = require('./service/postgres/collaborations/CollaborationsService');
+
 // playlists
 const playlists = require('./api/playlists');
 const PlaylistsValidator = require('./validator/playlists');
@@ -32,7 +38,11 @@ const HapiPlugin = async (server) => {
   const songsService = new SongsService();
   const usersService = new UsersService();
   const authenticationsService = new AuthenticationsService();
-  const playlistsService = new PlaylistService(songsService);
+  const collaborationsService = new CollaborationsService();
+  const playlistsService = new PlaylistService(
+    songsService,
+    collaborationsService
+  );
   const activitiesService = new ActivitiesService();
 
   await server.register([
@@ -72,6 +82,14 @@ const HapiPlugin = async (server) => {
         playlistsService,
         activitiesService,
         validator: PlaylistsValidator,
+      },
+    },
+    {
+      plugin: collaborations,
+      options: {
+        collaborationsService,
+        playlistsService,
+        validator: CollaborationsValidator,
       },
     },
   ]);

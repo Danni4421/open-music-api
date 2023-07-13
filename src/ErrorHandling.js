@@ -9,6 +9,8 @@ const ErrorHandling = (server) => {
   server.ext('onPreResponse', (req, res) => {
     const { response } = req;
     if (response instanceof Error) {
+      console.log('pesan: ');
+      console.log(response);
       if (response instanceof AuthenticationsError) {
         const authenticationsError = res.response({
           status: 'fail',
