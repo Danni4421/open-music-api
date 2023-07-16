@@ -1,6 +1,6 @@
 {
   "name": "open-music-api",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Application Programming Interface for songs data",
   "main": "index.js",
   "scripts": {
@@ -14,6 +14,7 @@
   "dependencies": {
     "@hapi/hapi": "^21.3.2",
     "@hapi/jwt": "^3.2.0",
+    "amqplib": "^0.10.3",
     "auto-bind": "4",
     "bcrypt": "^5.1.0",
     "dotenv": "^16.3.1",

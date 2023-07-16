@@ -25,6 +25,10 @@ const PlaylistService = require('./service/postgres/playlists/PlaylistsService')
 
 const ActivitiesService = require('./service/postgres/activities/ActivitiesService');
 
+const _exports = require('./api/exports');
+const ProducerService = require('./service/exports/ProducerService');
+const ExportsValidator = require('./validator/exports');
+
 const HapiPlugin = async (server) => {
   const albumsService = new AlbumsService();
   const songsService = new SongsService();
@@ -82,6 +86,14 @@ const HapiPlugin = async (server) => {
         collaborationsService,
         playlistsService,
         validator: CollaborationsValidator,
+      },
+    },
+    {
+      plugin: _exports,
+      options: {
+        exportsService: ProducerService,
+        playlistsService,
+        validator: ExportsValidator,
       },
     },
   ]);
