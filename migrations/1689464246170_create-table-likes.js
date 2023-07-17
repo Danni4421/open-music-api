@@ -1,5 +1,5 @@
 exports.up = (pgm) => {
-  pgm.createTable('likes', {
+  pgm.createTable('user_album_likes', {
     id: {
       type: 'VARCHAR(50)',
       primaryKey: true,
@@ -16,5 +16,5 @@ exports.up = (pgm) => {
 };
 
 exports.down = (pgm) => {
-  pgm.dropTable('likes');
+  pgm.dropTable('user_album_likes');
 };

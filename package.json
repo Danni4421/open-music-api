@@ -1,6 +1,6 @@
 {
   "name": "open-music-api",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Application Programming Interface for songs data",
   "main": "index.js",
   "scripts": {
@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@hapi/hapi": "^21.3.2",
+    "@hapi/inert": "^7.1.0",
     "@hapi/jwt": "^3.2.0",
     "amqplib": "^0.10.3",
     "auto-bind": "4",
@@ -25,6 +26,7 @@
     "nanoid": "3.1.20",
     "node-pg-migrate": "^6.2.2",
     "nodemon": "^2.0.22",
-    "pg": "^8.11.1"
+    "pg": "^8.11.1",
+    "redis": "^4.6.7"
   }
 }

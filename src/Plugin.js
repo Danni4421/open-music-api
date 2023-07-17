@@ -1,3 +1,5 @@
+const path = require('path');
+
 const songs = require('./api/songs');
 const SongsPayloadValidator = require('./validator/songs');
 const SongsService = require('./service/postgres/songs/SongsService');
@@ -29,8 +31,14 @@ const _exports = require('./api/exports');
 const ProducerService = require('./service/exports/ProducerService');
 const ExportsValidator = require('./validator/exports');
 
+const StorageService = require('./service/storage/StorageService');
+const AlbumCoversValidator = require('./validator/storage/index');
+
+const AlbumLikesCache = require('./service/cache/AlbumLikesCache');
+
 const HapiPlugin = async (server) => {
-  const albumsService = new AlbumsService();
+  const albumLikesCache = new AlbumLikesCache();
+  const albumsService = new AlbumsService(albumLikesCache);
   const songsService = new SongsService();
   const usersService = new UsersService();
   const authenticationsService = new AuthenticationsService();
@@ -40,13 +48,18 @@ const HapiPlugin = async (server) => {
     collaborationsService
   );
   const activitiesService = new ActivitiesService();
+  const storageService = new StorageService(
+    path.resolve(__dirname, 'api/albums/covers/img')
+  );
 
   await server.register([
     {
       plugin: albums,
       options: {
         service: albumsService,
+        storageService,
         validator: AlbumsPayloadValidator,
+        coversValidator: AlbumCoversValidator,
       },
     },
     {

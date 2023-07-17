@@ -1,7 +1,9 @@
+/* eslint-disable import/no-extraneous-dependencies */
 require('dotenv').config();
 
 const Hapi = require('@hapi/hapi');
 const Jwt = require('@hapi/jwt');
+const inert = require('@hapi/inert');
 const config = require('./service/utils/config');
 
 const ErrorHandling = require('./ErrorHandling');
@@ -21,6 +23,9 @@ const init = async () => {
   await server.register([
     {
       plugin: Jwt,
+    },
+    {
+      plugin: inert,
     },
   ]);
 

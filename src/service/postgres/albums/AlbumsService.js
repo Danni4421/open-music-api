@@ -8,8 +8,9 @@ const MapAlbumsIntoModels = require('../../utils/map/albums');
 const MapSongsIntoModels = require('../../utils/map/songs');
 
 class AlbumsService {
-  constructor() {
+  constructor(albumLikesService) {
     this._pool = new Pool();
+    this._cacheService = albumLikesService;
   }
 
   async addAlbums({ name, year }) {
@@ -36,12 +37,14 @@ class AlbumsService {
       throw new NotFoundError('Gagal mendapatkan data album');
     }
 
-    return result.rows.map(MapAlbumsIntoModels);
+    const mappedResult = result.rows.map(MapAlbumsIntoModels);
+
+    return mappedResult;
   }
 
   async getAlbumsById(id) {
     const query = {
-      text: 'SELECT id, name, year FROM albums WHERE id = $1',
+      text: 'SELECT id, name, year, cover_url FROM albums WHERE id = $1',
       values: [id],
     };
 
@@ -51,7 +54,9 @@ class AlbumsService {
       throw new NotFoundError('Gagal mendapatkan album. Id tidak ditemukan');
     }
 
-    return result.rows.map(MapAlbumsIntoModels)[0];
+    const mappedResult = result.rows.map(MapAlbumsIntoModels)[0];
+
+    return mappedResult;
   }
 
   async editAlbumsById(id, { name, year }) {
@@ -68,7 +73,7 @@ class AlbumsService {
     }
   }
 
-  async deleteAlbumsById(id) {
+  async deleteAlbumsById(id, userId) {
     const query = {
       text: 'DELETE FROM albums WHERE id = $1 RETURNING id',
       values: [id],
@@ -78,6 +83,8 @@ class AlbumsService {
     if (!result.rowCount) {
       throw new NotFoundError('Gagal menghapus album. Id tidak ditemukan');
     }
+
+    await this._cacheService.delete(`album/${id}:${userId}`);
   }
 
   async getSongsByAlbumId(albumId) {
@@ -105,7 +112,7 @@ class AlbumsService {
 
   async isAlreadyLikes(userId, albumId) {
     const query = {
-      text: 'SELECT * FROM likes WHERE album_id = $1 AND user_id = $2',
+      text: 'SELECT * FROM user_album_likes WHERE album_id = $1 AND user_id = $2',
       values: [albumId, userId],
     };
 
@@ -120,7 +127,7 @@ class AlbumsService {
 
     const id = `likes-${nanoid(16)}`;
     const query = {
-      text: 'INSERT INTO likes VALUES ($1, $2, $3) RETURNING id',
+      text: 'INSERT INTO user_album_likes VALUES ($1, $2, $3) RETURNING id',
       values: [id, albumId, userId],
     };
 
@@ -129,33 +136,54 @@ class AlbumsService {
     if (!result.rowCount) {
       throw new InvariantError('Gagal menambahkan likes');
     }
+
+    await this._cacheService.delete(`album-likes:${albumId}`);
   }
 
   async getLikes(albumId) {
-    const query = {
-      text: `
+    try {
+      const result = await this._cacheService.get(`album-likes:${albumId}`);
+      const likes = JSON.parse(result);
+      return {
+        likes,
+        cache: true,
+      };
+    } catch (error) {
+      const query = {
+        text: `
         SELECT 
           COUNT(*)
-          FROM likes
+          FROM user_album_likes
             WHERE album_id = $1
             GROUP BY album_id
       `,
-      values: [albumId],
-    };
+        values: [albumId],
+      };
 
-    const result = await this._pool.query(query);
+      const result = await this._pool.query(query);
+      const likes = parseInt(result.rows[0].count, 10);
 
-    return parseInt(result.rows[0].count, 10);
+      await this._cacheService.set(
+        `album-likes:${albumId}`,
+        JSON.stringify(likes)
+      );
+
+      return {
+        likes,
+        cache: false,
+      };
+    }
   }
 
   async deleteLikes(userId, albumId) {
-    console.log(albumId, userId);
     const query = {
-      text: 'DELETE FROM likes WHERE album_id = $1 AND user_id = $2',
+      text: 'DELETE FROM user_album_likes WHERE album_id = $1 AND user_id = $2',
       values: [albumId, userId],
     };
 
     await this._pool.query(query);
+
+    await this._cacheService.delete(`album-likes:${albumId}`);
   }
 }
 

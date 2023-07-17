@@ -1,9 +1,11 @@
 const autoBind = require('auto-bind');
 
 class AlbumsHandler {
-  constructor(service, validator) {
+  constructor(service, storageService, validator, coversValidator) {
     this._service = service;
+    this._storageService = storageService;
     this._validator = validator;
+    this._coversValidator = coversValidator;
 
     autoBind(this);
   }
@@ -37,7 +39,7 @@ class AlbumsHandler {
     const { id } = req.params;
     const resultAlbum = await this._service.getAlbumsById(id);
     const songs = await this._service.getSongsByAlbumId(id);
-    const { name, year } = resultAlbum;
+    const { name, year, coverUrl } = resultAlbum;
 
     return {
       status: 'success',
@@ -47,6 +49,7 @@ class AlbumsHandler {
           id,
           name,
           year,
+          coverUrl,
           songs,
         },
       },
@@ -87,16 +90,18 @@ class AlbumsHandler {
     return response;
   }
 
-  async getAlbumLikesByIdHandler(req) {
+  async getAlbumLikesByIdHandler(req, res) {
     const { id: albumId } = req.params;
-    const likes = await this._service.getLikes(albumId);
-    return {
+    const { likes, cache } = await this._service.getLikes(albumId);
+    const response = res.response({
       status: 'success',
-      message: 'Berhasil mendapatkan likes',
+      message: 'Berhasil mendapatkan jumlah like.',
       data: {
         likes,
       },
-    };
+    });
+    if (cache) response.header('X-Data-Source', 'cache');
+    return response;
   }
 
   async deleteAlbumLikesByIdHandler(req) {
@@ -107,6 +112,30 @@ class AlbumsHandler {
       status: 'success',
       message: 'Berhasil menghapus likes',
     };
+  }
+
+  async postAlbumCoversHandler(req, res) {
+    const { cover } = req.payload;
+    const { id: albumId } = req.params;
+    this._coversValidator.validateAlbumCoversPayload(cover.hapi.headers);
+
+    const filename = await this._storageService.writeFile(
+      cover,
+      cover.hapi,
+      albumId
+    );
+
+    await this._storageService.addCoverUrlAlbums(albumId, filename);
+
+    const response = res.response({
+      status: 'success',
+      message: 'Sampul berhasil diunggah',
+      data: {
+        filename,
+      },
+    });
+    response.code(201);
+    return response;
   }
 }
 

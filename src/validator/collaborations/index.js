@@ -1,4 +1,3 @@
-/* eslint-disable operator-linebreak */
 const InvariantError = require('../../exceptions/client/InvariantError');
 const {
   PostCollaborationsPayloadSchema,
