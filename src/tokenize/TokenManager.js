@@ -1,13 +1,10 @@
-/* eslint-disable implicit-arrow-linebreak */
 const Jwt = require('@hapi/jwt');
 const config = require('../service/utils/config');
 const InvariantError = require('../exceptions/client/InvariantError');
 
 const TokenManager = {
-  generateAccessToken: (payload) =>
-    Jwt.token.generate(payload, config.jwt.accessTokenKey),
-  generateRefreshToken: (payload) =>
-    Jwt.token.generate(payload, config.jwt.refreshTokenKey),
+  generateAccessToken: (payload) => Jwt.token.generate(payload, config.jwt.accessTokenKey),
+  generateRefreshToken: (payload) => Jwt.token.generate(payload, config.jwt.refreshTokenKey),
   verifyRefreshToken: (refreshToken) => {
     try {
       const artifacts = Jwt.token.decode(refreshToken);

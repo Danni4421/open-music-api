@@ -16,13 +16,13 @@ class CollaborationsHandler {
 
     await this._collaborationsService.verifyRequirementCollaborations(
       playlistId,
-      userId
+      userId,
     );
 
     await this._playlistsService.verifyPlaylistOwner(playlistId, credentialId);
     const collaborationId = await this._collaborationsService.addCollaboration(
       playlistId,
-      userId
+      userId,
     );
 
     const response = res.response({

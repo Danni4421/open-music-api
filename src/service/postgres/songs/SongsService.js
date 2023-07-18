@@ -10,7 +10,9 @@ class SongsService {
     this._pool = new Pool();
   }
 
-  async addSongs({ title, year, genre, performer, duration, albumId }) {
+  async addSongs({
+    title, year, genre, performer, duration, albumId,
+  }) {
     const id = `songs-${nanoid(16)}`;
     const createdAt = new Date().toISOString();
     const updatedAt = createdAt;
@@ -41,7 +43,7 @@ class SongsService {
 
   async getSongs() {
     const result = await this._pool.query(
-      'SELECT id, title, performer FROM songs'
+      'SELECT id, title, performer FROM songs',
     );
 
     if (!result.rowCount > 0) {
@@ -84,10 +86,9 @@ class SongsService {
     return result.rows;
   }
 
-  async editSongsById(
-    id,
-    { title, year, genre, performer, duration, albumId }
-  ) {
+  async editSongsById(id, {
+    title, year, genre, performer, duration, albumId,
+  }) {
     const updatedAt = new Date().toISOString();
     const query = {
       text: 'UPDATE songs SET title=$1, year=$2, genre=$3, performer=$4, duration=$5, album_id=$6, updated_at=$7 WHERE id = $8 RETURNING id',
@@ -116,27 +117,42 @@ class SongsService {
   async searchByTitleAndPerformer({ title, performer }) {
     const query = {};
     if (title !== undefined && performer !== undefined) {
-      query.text =
-        'SELECT id, title, performer FROM songs WHERE LOWER(title) LIKE $1 AND LOWER(performer) LIKE $2';
+      query.text = `
+        SELECT 
+          id, 
+          title, 
+          performer 
+        FROM songs 
+          WHERE LOWER(title) LIKE $1 AND LOWER(performer) LIKE $2`;
       query.values = [`%${title}%`, `%${performer}%`];
     }
 
     if (title !== undefined) {
-      query.text =
-        'SELECT id, title, performer FROM songs WHERE LOWER(title) LIKE $1';
+      query.text = `
+        SELECT 
+          id, 
+          title, 
+          performer 
+        FROM songs 
+          WHERE LOWER(title) LIKE $1`;
       query.values = [`%${title}%`];
     }
 
     if (performer !== undefined) {
-      query.text =
-        'SELECT id, title, performer FROM songs WHERE LOWER(performer) LIKE $1';
+      query.text = `
+        SELECT 
+          id, 
+          title, 
+          performer 
+        FROM songs 
+          WHERE LOWER(performer) LIKE $1`;
       query.values = [`%${performer}%`];
     }
 
     const result = await this._pool.query(query);
     if (!result.rowCount) {
       throw new NotFoundError(
-        'Gagal mendapatkan lagu. Keyword mungkin tidak sesuai'
+        'Gagal mendapatkan lagu. Keyword mungkin tidak sesuai',
       );
     }
 

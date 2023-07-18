@@ -13,8 +13,7 @@ const CollaborationsValidator = {
   },
 
   validateDeleteCollaborationsPayload: (payload) => {
-    const validationResult =
-      DeleteCollaborationsPayloadSchema.validate(payload);
+    const validationResult = DeleteCollaborationsPayloadSchema.validate(payload);
     if (validationResult.error) {
       throw new InvariantError(validationResult.error.message);
     }

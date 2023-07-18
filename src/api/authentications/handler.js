@@ -16,7 +16,7 @@ class AuthenticationsHandler {
     const { username, password } = req.payload;
     const id = await this._usersService.verifyUserCredential(
       username,
-      password
+      password,
     );
 
     const accessToken = this._tokenManager.generateAccessToken({ id });

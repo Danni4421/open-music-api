@@ -16,7 +16,7 @@ class PlaylistsHandler {
 
     const playlistId = await this._playlistsService.addPlaylist(
       name,
-      credentialId
+      credentialId,
     );
     const response = res.response({
       status: 'success',
@@ -65,7 +65,7 @@ class PlaylistsHandler {
       playlistId,
       songId,
       credentialId,
-      'add'
+      'add',
     );
 
     const response = res.response({
@@ -82,7 +82,7 @@ class PlaylistsHandler {
     await this._playlistsService.verifyPlaylistAccess(playlistId, credentialId);
     const playlist = await this._playlistsService.getPlaylistSongs(
       playlistId,
-      credentialId
+      credentialId,
     );
 
     return {
@@ -107,7 +107,7 @@ class PlaylistsHandler {
       playlistId,
       songId,
       credentialId,
-      'delete'
+      'delete',
     );
 
     return {
@@ -122,7 +122,7 @@ class PlaylistsHandler {
 
     await this._playlistsService.verifyPlaylistAccess(playlistId, credentialId);
     const activities = await this._activitiesService.getActivitiesPlaylist(
-      playlistId
+      playlistId,
     );
     return {
       status: 'success',

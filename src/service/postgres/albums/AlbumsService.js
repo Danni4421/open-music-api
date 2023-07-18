@@ -1,6 +1,8 @@
 const { Pool } = require('pg');
 const { nanoid } = require('nanoid');
 
+const config = require('../../utils/config');
+
 const InvariantError = require('../../../exceptions/client/InvariantError');
 const NotFoundError = require('../../../exceptions/client/NotFoundError');
 
@@ -165,7 +167,7 @@ class AlbumsService {
 
       await this._cacheService.set(
         `album-likes:${albumId}`,
-        JSON.stringify(likes)
+        JSON.stringify(likes),
       );
 
       return {
@@ -184,6 +186,22 @@ class AlbumsService {
     await this._pool.query(query);
 
     await this._cacheService.delete(`album-likes:${albumId}`);
+  }
+
+  async addCoverUrlAlbums(albumId, filename) {
+    const query = {
+      text: 'UPDATE albums SET cover_url = $1 WHERE id = $2',
+      values: [
+        `http://${config.server.host}:${config.server.port}/albums/${albumId}/covers/${filename}`,
+        albumId,
+      ],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rowCount) {
+      throw new InvariantError('Gagal menambahkan url cover album.');
+    }
   }
 }
 

@@ -45,11 +45,11 @@ const HapiPlugin = async (server) => {
   const collaborationsService = new CollaborationsService();
   const playlistsService = new PlaylistService(
     songsService,
-    collaborationsService
+    collaborationsService,
   );
   const activitiesService = new ActivitiesService();
   const storageService = new StorageService(
-    path.resolve(__dirname, 'api/albums/covers/img')
+    path.resolve(__dirname, 'api/albums/covers/img'),
   );
 
   await server.register([

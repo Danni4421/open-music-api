@@ -40,7 +40,7 @@ class UsersService {
 
     if (result.rowCount > 0) {
       throw new InvariantError(
-        'Gagal menambahkan user. Username sudah digunakan.'
+        'Gagal menambahkan user. Username sudah digunakan.',
       );
     }
   }
@@ -68,7 +68,7 @@ class UsersService {
 
     if (!result.rowCount) {
       throw new AuthenticationsError(
-        'Kredensial yang Anda berikan tidak valid.'
+        'Kredensial yang Anda berikan tidak valid.',
       );
     }
 
@@ -78,7 +78,7 @@ class UsersService {
 
     if (!isMatch) {
       throw new AuthenticationsError(
-        'Kredensial yang Anda berikan tidak valid'
+        'Kredensial yang Anda berikan tidak valid',
       );
     }
 

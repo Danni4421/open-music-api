@@ -22,7 +22,7 @@ class PlaylistService {
       try {
         await this._collaborationsService.verifyCollaborator(
           playlistId,
-          credentialId
+          credentialId,
         );
       } catch {
         throw error;
@@ -60,10 +60,9 @@ class PlaylistService {
     };
 
     const result = await this._pool.query(query);
-    const collaborationsPlaylist =
-      await this._collaborationsService.getCollaborationsPlaylist(credentialId);
+    const clbPlaylist = await this._collaborationsService.getCollaborationsPlaylist(credentialId);
 
-    collaborationsPlaylist.rows.map((p) => result.rows.push(p));
+    clbPlaylist.rows.map((p) => result.rows.push(p));
 
     return result.rows;
   }
@@ -137,7 +136,7 @@ class PlaylistService {
 
     if (!playlistResult.rows.length) {
       throw new NotFoundError(
-        'Gagal mendapatkan playlist, Id tidak ditemukan.'
+        'Gagal mendapatkan playlist, Id tidak ditemukan.',
       );
     }
 
@@ -184,7 +183,7 @@ class PlaylistService {
 
     if (ownerId !== owner) {
       throw new AuthorizationsError(
-        'Gagal memuat playlist, Anda bukan pemilik playlist.'
+        'Gagal memuat playlist, Anda bukan pemilik playlist.',
       );
     }
   }

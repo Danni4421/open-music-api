@@ -8,7 +8,7 @@ const AlbumCoversPayloadSchema = Joi.object({
       'image/gif',
       'image/jpeg',
       'image/png',
-      'image/webp'
+      'image/webp',
     )
     .required(),
 }).unknown();

@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 const redis = require('redis');
 const config = require('../utils/config');
 

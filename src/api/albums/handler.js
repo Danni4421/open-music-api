@@ -122,10 +122,10 @@ class AlbumsHandler {
     const filename = await this._storageService.writeFile(
       cover,
       cover.hapi,
-      albumId
+      albumId,
     );
 
-    await this._storageService.addCoverUrlAlbums(albumId, filename);
+    await this._service.addCoverUrlAlbums(albumId, filename);
 
     const response = res.response({
       status: 'success',
